@@ -103,4 +103,15 @@ COPY pipeline.py pipeline.py
 ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
 ```
 
+# Terraform
+
+## What is Terraform?
+- A recipe or a blueprint that will be applied to our servers or cloud environment.  
+## Why do we need Terraform?
+- Automate reproducibility environment. Deploying in cloud by using IaC (infrastructure as a code) like Terraform can help to automate, manage, scale the cloud infrastructure without clicking in the cloud console here and there. This manual clicking is prone to error. By using declarative code, engineer can provision, track, version, and destroy the infrastructure efficiently while ensuring consistency across cloud environments.  
+- We can manage multi-cloud using IaC
+- Terraform has `terraform plan` command that allows us to preview the changes Terraform will make before we apply them [Terraform Plan Documentation](https://developer.hashicorp.com/terraform/cli/commands/plan)  
+- Terraform has `terraform destroy` that is used to permanently remove all the infrastructure resources previously provisioned by our config and state file. [Terraform destroy Documentation](https://developer.hashicorp.com/terraform/cli/commands/destroy). Very convenient to have destroy command, because we can spin up our cloud env for a few minutes, do some testing and then deprovision the cloud resources. It saves cost.
+
+
 
