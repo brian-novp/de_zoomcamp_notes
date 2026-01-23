@@ -42,20 +42,28 @@ services:
     ports:
       - "8085:80"
 
-
-
 volumes:
   ny_taxi_postgres_data:
   pgadmin_data:
 ```
+As we can see at the above yaml, we have two `volumes`.  
+1. At the `services` level, the outer left of the line at the bottom :  
+    ```yaml
+    volumes:
+      ny_taxi_postgres_data:
+      pgadmin_data:
+    ```
+    These 3 lines declare/define that these volumes' name exist and can be used in any services.  We can also configure it further inside this `volumes` .  Read [StackOverFlow](https://stackoverflow.com/questions/72609516/why-do-i-need-to-specify-volumes-twice) for detailed information.  
+2. Inside each service
+    Self-explanatory
 
-If using CLI like `docker run` , we have to add flag `-v` and then map the volumes, like so :
+If using CLI like `docker run` , we have to add `-v` flag and then map the volumes, like so :
 ```
 docker run -it --rm \
   -e POSTGRES_USER="root" \
   -e POSTGRES_PASSWORD="root" \
   -e POSTGRES_DB="ny_taxi" \
-  -v ny_taxi_postgres_data:/var/lib/postgresql \
+  -v ny_taxi_postgres_data:/var/lib/postgresql \ #this is volume mapping or bind mount
   -p 5432:5432 \
   postgres:18
 ```
