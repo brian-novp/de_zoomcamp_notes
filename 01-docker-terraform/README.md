@@ -12,17 +12,23 @@
 - By default, docker is stateless. Meaning, docker does not retain data or state between runs or termination. Each time a container/containers is/are started, they will start in a fresh instance with no memory of previous condition unless explicitly told to retain by VOLUME MAPPING or (bind mounting).
 
 ### Volume Mapping or bind mounting in docker
-Volume mapping can be done in docker cli or in docker-compose.yaml file. Below is an example of docker-compose.yaml file 
+Volume mapping can be done in docker cli when running an image or in docker-compose.yaml file but not in Dockerfile. Below is an example of docker-compose.yaml file that has volume mapping to each service.
 ```yaml
 services:
-  pgdatabase:
-    image: postgres:18
+  pgdatabase: #name of the service
+    image: postgres:18 
     environment:
       POSTGRES_USER: "root"
       POSTGRES_PASSWORD: "root"
       POSTGRES_DB: "ny_taxi"
-    volumes: #this map the volume of pgdatabase (the name of the service)
-      - "ny_taxi_postgres_data:/var/lib/postgresql" #this maps the `ny_taxi_postgress_data` to the volume inside the container, that is `/var/lib/postgresql`. Why `/var/lib/` ? because in linux they have `var lib` folder structure. In Linux environment, `/var` is the standard directory for *variable data* . We can replace the `ny_taxi_postgress` with other values that corresponds to our real situation. For example, current working directory is `postgress_data`, just replace the `ny_taxi_progress` with `postgress_data`
+    volumes: #this map the volume of the service, that is , pgdatabase (the name of the service)
+      - "ny_taxi_postgres_data:/var/lib/postgresql" 
+      # This maps the `ny_taxi_postgress_data` to the volume inside the container,
+      # that is `/var/lib/postgresql`. Why `/var/lib/` ? because in linux they have `var lib` folder structure.
+      # In Linux environment, `/var` is the standard directory for *variable data* .
+      # We can replace the `ny_taxi_postgress` with other values that corresponds to our real situation.
+      # For example, current working directory is `postgress_data`, 
+      #just replace the `ny_taxi_progress` with `postgress_data`
     ports:
       - "5432:5432"
 
@@ -41,4 +47,15 @@ services:
 volumes:
   ny_taxi_postgres_data:
   pgadmin_data:
+```
+
+If using CLI like `docker run` , we have to add flag `-v` and then map the volumes, like so :
+```
+docker run -it --rm \
+  -e POSTGRES_USER="root" \
+  -e POSTGRES_PASSWORD="root" \
+  -e POSTGRES_DB="ny_taxi" \
+  -v ny_taxi_postgres_data:/var/lib/postgresql \
+  -p 5432:5432 \
+  postgres:18
 ```
