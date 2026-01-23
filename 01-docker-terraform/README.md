@@ -78,7 +78,7 @@ Put simply, Dockerfile (without extension file) is a recipe card or assembly ins
 
 ## Example of a Dockerfile from DataTalksClub
 A Simple Dockerfile with uv
-```yaml
+```dockerfile
 # Start with slim Python 3.13 image
 FROM python:3.13.10-slim
 
