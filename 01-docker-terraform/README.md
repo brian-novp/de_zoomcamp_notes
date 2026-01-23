@@ -54,7 +54,7 @@ As we can see at the above yaml, we have two `volumes`.
       pgadmin_data:
     ```
     These 3 lines declare/define that these volumes' name exist and can be used in any services.  We can also configure it further inside this `volumes` .  Read [StackOverFlow](https://stackoverflow.com/questions/72609516/why-do-i-need-to-specify-volumes-twice) for detailed information.  
-2. Inside each service
+2. Inside each service  
     Self-explanatory
 
 If using CLI like `docker run` , we have to add `-v` flag and then map the volumes, like so :
@@ -67,3 +67,40 @@ docker run -it --rm \
   -p 5432:5432 \
   postgres:18
 ```
+
+# Dockerfile  
+## What is Dockerfile?
+Put simply, Dockerfile (without extension file) is a recipe card or assembly instructions card. It is a list of steps that tells a robot (in this case, the Docker Engine) how to build fully furnished room (the container) from scratch, like so:  
+1. Start with a blank room --> this is the `base image`  
+2. Bring in the furniture --> COPY the code  
+3. Install appliances, lights, etc --> run the commands  
+4. Plug everything --> entrypoint
+
+## Example of a Dockerfile from DataTalksClub
+A Simple Dockerfile with uv
+```yaml
+# Start with slim Python 3.13 image
+FROM python:3.13.10-slim
+
+# Copy uv binary from official uv image (multi-stage build pattern)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
+
+# Set working directory
+WORKDIR /app
+
+# Add virtual environment to PATH so we can use installed packages
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Copy dependency files first (better layer caching)
+COPY "pyproject.toml" "uv.lock" ".python-version" ./
+# Install dependencies from lock file (ensures reproducible builds)
+RUN uv sync --locked
+
+# Copy application code
+COPY pipeline.py pipeline.py
+
+# Set entry point
+ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
+```
+
+
