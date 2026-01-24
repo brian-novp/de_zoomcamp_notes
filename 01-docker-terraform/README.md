@@ -114,4 +114,11 @@ ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
 - Terraform has `terraform destroy` that is used to permanently remove all the infrastructure resources previously provisioned by our config and state file. [Terraform destroy Documentation](https://developer.hashicorp.com/terraform/cli/commands/destroy). Very convenient to have destroy command, because we can spin up our cloud env for a few minutes, do some testing and then deprovision the cloud resources. It saves cost.
 
 
+## Things to remember
+1. Storing credentials (keypair/service account key for accounts or roles provided by the cloud) must be done right.  
+    :x: Never hard code the credentials.
+    :white_check_mark: Export credentials into a variable using `export` cli  
+2. Always include [Terraform gitignore](https://github.com/github/gitignore/blob/main/Terraform.gitignore) in .gitignore and include any `*.json`
 
+## How to use Terraform?
+Read and copy paste from [documentation of Terraform providers](https://registry.terraform.io/browse/providers). Adjust value based on our real condition.
