@@ -116,7 +116,7 @@ ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
 
 ## Things to remember
 1. Storing credentials (keypair/service account key for accounts or roles provided by the cloud) must be done right.  
-    :x: Never hard code the credentials.
+    :x: Never hard code the credentials.  
     :white_check_mark: Export credentials into a variable using `export` cli  
 2. Always include [Terraform gitignore](https://github.com/github/gitignore/blob/main/Terraform.gitignore) in .gitignore and include any `*.json`
 
