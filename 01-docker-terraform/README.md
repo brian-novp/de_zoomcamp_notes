@@ -26,9 +26,8 @@ services:
       # This maps the `ny_taxi_postgress_data` to the volume inside the container,
       # that is `/var/lib/postgresql`. Why `/var/lib/` ? because in linux they have `var lib` folder structure.
       # In Linux environment, `/var` is the standard directory for *variable data* .
-      # We can replace the `ny_taxi_postgress` with other values that corresponds to our real situation.
-      # For example, current working directory is `postgress_data`, 
-      #just replace the `ny_taxi_progress` with `postgress_data`
+      #  without "/" this is volume mapping, not bind mount
+      # volume mapping or named volume is managed by Docker (we may not see it)
     ports:
       - "5432:5432"
 
@@ -63,7 +62,34 @@ docker run -it --rm \
   -e POSTGRES_USER="root" \
   -e POSTGRES_PASSWORD="root" \
   -e POSTGRES_DB="ny_taxi" \
-  -v ny_taxi_postgres_data:/var/lib/postgresql \ #this is volume mapping or bind mount
+  -v ny_taxi_postgres_data:/var/lib/postgresql \ #this is volume mapping
+  -p 5432:5432 \
+  postgres:18
+```  
+### Volume Mapping
+- (name:/path): Managed by Docker, easier
+- Example :
+```bash
+docker run -it --rm \
+  -e POSTGRES_USER="root" \
+  -e POSTGRES_PASSWORD="root" \
+  -e POSTGRES_DB="ny_taxi" \
+  -v ny_taxi_postgres_data:/var/lib/postgresql \
+  -p 5432:5432 \
+  postgres:18
+```
+or see docker-compose above.  
+## Bind Mount
+- (/host/path:/container/path): Direct mapping to host filesystem, more control
+- create directory on host machine first and then map it like so:
+```bash
+mkdir ny_taxi_postgres_data
+
+docker run -it \
+  -e POSTGRES_USER="root" \
+  -e POSTGRES_PASSWORD="root" \
+  -e POSTGRES_DB="ny_taxi" \
+  -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql \
   -p 5432:5432 \
   postgres:18
 ```
@@ -114,4 +140,11 @@ ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
 - Terraform has `terraform destroy` that is used to permanently remove all the infrastructure resources previously provisioned by our config and state file. [Terraform destroy Documentation](https://developer.hashicorp.com/terraform/cli/commands/destroy). Very convenient to have destroy command, because we can spin up our cloud env for a few minutes, do some testing and then deprovision the cloud resources. It saves cost.
 
 
+## Things to remember
+1. Storing credentials (keypair/service account key for accounts or roles provided by the cloud) must be done right.  
+    :x: Never hard code the credentials.  
+    :white_check_mark: Export credentials into a variable using `export` cli  
+2. Always include [Terraform gitignore](https://github.com/github/gitignore/blob/main/Terraform.gitignore) in .gitignore and include any `*.json`
 
+## How to use Terraform?
+Read and copy paste from [documentation of Terraform providers](https://registry.terraform.io/browse/providers). Adjust value based on our real condition.
