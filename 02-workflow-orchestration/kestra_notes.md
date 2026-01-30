@@ -12,7 +12,8 @@
 - Airflow uses Python to orchestrate workflow (as of 2026).
 - Airflow uses XCOM backend to communicate data between task or functions. It can use Postgre(Max of )
 - By default, Kestra uses internal storage as the XCOM equivalent in Airflow. It saves the file generated during a flow execution and pass them between tasks via `outputs`. [Kestra Internal Storage Docs](https://kestra.io/docs/architecture/main-components#internal-storage)  
-- 
+- Airflow has role based access control without paying. While we must pay the Kestra enterprise edition to enable RBAC.
+- Airflow has some ways to store secrets (using variables or in connections setting) without paying [Airflow Secret](https://airflow.apache.org/docs/apache-airflow/stable/security/secrets/index.html).  While we must pay the Kestra enterprise edition to enable storing secrets.  
 
 # Breaking Down Kestra yaml syntax
 ## id and namespace  
