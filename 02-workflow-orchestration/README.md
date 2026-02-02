@@ -16,7 +16,7 @@
 - Airflow has some ways to store secrets (using variables or in connections setting) without paying [Airflow Secret](https://airflow.apache.org/docs/apache-airflow/stable/security/secrets/index.html).  While we must pay the Kestra enterprise edition to enable storing secrets.  
 
 # Breaking Down Kestra yaml syntax
-## id and namespace  
+## id and namespace
 ```yaml
 id : getting_started
 namespace : zoomcamp
