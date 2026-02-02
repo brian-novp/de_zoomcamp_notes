@@ -23,6 +23,7 @@ namespace : zoomcamp
 ```  
 `id` will be displayed in the Flow menu. `namespace` is used as a workspace group. If we store key value or secret in the same namespace, then we can use it anywhere in the tasks or flows without creating new id or variables. Pretty convenient feature, so, make sure these two are correctly setup. Once we saved the yaml, there is no way to change id and namespace but to remove the existing yaml and create new one.  
 
+## variables
 ```yaml
 variables:
   data : green_taxi.csv
@@ -49,6 +50,27 @@ tasks:
       file: "{{render(vars.file)}}"
       taxi: "{{inputs.taxi}}"
 ```  
-notice that `file` variable has `render` in it before the `vars.file`.
+notice that `file` variable has `render` in it before the `vars.file`. See [kestra expression documentation](https://kestra.io/docs/expressions)
+
+## task
+Task is the core of Kestra. It is plugin-based. In it, we can use many properties. These properties are configurable. For example  
+```yaml
+tasks:
+- id: extract
+    type: io.kestra.plugin.scripts.shell.Commands
+    outputFiles:
+      - "*.csv"
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - wget -qO- https://github.com/DataTalksClub/nyc-tlc-data/releases/download/{{inputs.taxi}}/{{render(vars.file)}}.gz | gunzip > {{render(vars.file)}}
+```  
+- `id` is the identity that will be displayed in execution logs and gantt charts
+- `type` is where we put the plugins for the task. In this is case, it tells kestra that in "id extract" need to run command line
+- `ouputFiles` is a property of the `io.kestra.plugin.scripts.shell.Commands`, it tells Kestra that the output from the command line will be saved as csv
+-  `taskRunner` is another property of `io.kestra.plugin.scripts.shell.Commands`  [shell command](https://kestra.io/plugins/plugin-script-shell/io.kestra.plugin.scripts.shell.commands)
+- `type` another type where we put the plugin of task runner that executes a task as a subprocess on the Kestra host. [runner process] (https://kestra.io/plugins/core/runner/io.kestra.plugin.core.runner.process)
+- `commands` contains the shell command to run (it is a property of `io.kestra.plugin.scripts.shell.Commands` plugin)
+
 
 
