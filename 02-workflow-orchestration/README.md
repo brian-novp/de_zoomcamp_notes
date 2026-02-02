@@ -69,7 +69,7 @@ tasks:
 - `type` is where we put the plugins for the task. In this is case, it tells kestra that in "id extract" need to run command line
 - `ouputFiles` is a property of the `io.kestra.plugin.scripts.shell.Commands`, it tells Kestra that the output from the command line will be saved as csv
 -  `taskRunner` is another property of `io.kestra.plugin.scripts.shell.Commands`  [shell command](https://kestra.io/plugins/plugin-script-shell/io.kestra.plugin.scripts.shell.commands)
-- `type` another type where we put the plugin of task runner that executes a task as a subprocess on the Kestra host. [runner process] (https://kestra.io/plugins/core/runner/io.kestra.plugin.core.runner.process)
+- `type` another type where we put the plugin of task runner that executes a task as a subprocess on the Kestra host. [runner process](https://kestra.io/plugins/core/runner/io.kestra.plugin.core.runner.process)
 - `commands` contains the shell command to run (it is a property of `io.kestra.plugin.scripts.shell.Commands` plugin)
 
 ## pluginDefaults
