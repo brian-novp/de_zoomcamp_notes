@@ -8,10 +8,10 @@
 - Kestra uses PostgreSQL as metadata storage. Same as Airflow. (must be included in docker compose yaml for local development)
 
 # Then what is/are the difference(s) with Airflow?
-- Kestra adopt IaC practices for data and process orchestration. Therefore Kestra uses declarative language in yaml file.  
+- Kestra adopts Infrastructure as Code (IaC) practices for data and process orchestration, using a declarative language within its YAML files. 
 - Airflow uses Python to orchestrate workflow (as of 2026).
 - Airflow uses XCOM backend to communicate data between tasks or functions. It can use Postgre(Max of 1GB), SQLite(2GB max), MySQL (64kb). Airflow can also use custom backedn like object storage (AWS S3), if we need to pass data between task that exceed the ability of the metadata database.
-- By default, Kestra uses internal storage as the XCOM equivalent in Airflow. It saves the file generated during a flow execution and pass them between tasks via `outputs`. [Kestra Internal Storage Docs](https://kestra.io/docs/architecture/main-components#internal-storage)  
+- By default, Kestra uses internal storage, which is the equivalent of XCOM in Airflow. It saves files generated during a flow execution and passes them between tasks via `outputs`. [Kestra Internal Storage Docs](https://kestra.io/docs/architecture/main-components#internal-storage)  
 - Airflow has role based access control without paying. While we must pay the Kestra enterprise edition to enable RBAC.
 - Airflow has some ways to store secrets (using variables or in connections setting) without paying [Airflow Secret](https://airflow.apache.org/docs/apache-airflow/stable/security/secrets/index.html).  While we must pay the Kestra enterprise edition to enable storing secrets.  
 
@@ -72,5 +72,27 @@ tasks:
 - `type` another type where we put the plugin of task runner that executes a task as a subprocess on the Kestra host. [runner process] (https://kestra.io/plugins/core/runner/io.kestra.plugin.core.runner.process)
 - `commands` contains the shell command to run (it is a property of `io.kestra.plugin.scripts.shell.Commands` plugin)
 
+## pluginDefaults
+```yaml
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
+```  
+to setup cloud services. for `serviceAccount` in DE zoomcamp uses key value store. This is because SECRET feature in Kestra only available in Enterprise edition. Best practice is to use SECRET feature. To access the value of a key, use `kv` before accesing the key "{{kv('GCP_BUCKET_NAME')}}
+in this case we use Google Cloud Platform plugin to setup the BigQuery and Google Cloud Storage. [Kestra pluginDefaults](https://kestra.io/docs/workflow-components/plugin-defaults)  
 
 
+## trigger
+```yaml
+triggers:
+  - id: green_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 1 * *"
+    inputs:
+      taxi: green
+```  
+Use triggers to setup well...triggers! In this case we use Schedule trigger using a cron expression: to run this flow at 9 AM every start of the month when the flow detecs taxi input is green. Kestra triggers come with many flavours. [Triggers](https://kestra.io/docs/workflow-components/triggers)
