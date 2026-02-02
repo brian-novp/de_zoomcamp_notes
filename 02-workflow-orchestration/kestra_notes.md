@@ -1,27 +1,36 @@
 # What is Kestra?
 - Workflow orchestrator that is language-agnostic.
+- It uses plugins to orchestrate workflow.
 - It has no code and AI support.
-- It has web app like Airflow.
+- It has web app like Airflow. We can edit the yaml file (Flow, Kestra call it) inside the web app. It also has built-in documentation. If we click the specific task, the documentation will automatically display the corresponding plugin documentation.
 
 # Metadata storage
-- Kestra uses PostgreSQL as metadata storage. Same as Airflow. (must be included in docker compose yaml)
+- Kestra uses PostgreSQL as metadata storage. Same as Airflow. (must be included in docker compose yaml for local development)
 
 # Then what is/are the difference(s) with Airflow?
-- Kestra adopt IaC practices for data and process orchestration.
-- Therefore Kestra uses declarative language in yaml file
-- Airflow use Python to orchestrate workflow (as of 2026)
+- Kestra adopt IaC practices for data and process orchestration. Therefore Kestra uses declarative language in yaml file.  
+- Airflow uses Python to orchestrate workflow (as of 2026).
+- Airflow uses XCOM backend to communicate data between tasks or functions. It can use Postgre(Max of 1GB), SQLite(2GB max), MySQL (64kb). Airflow can also use custom backedn like object storage (AWS S3), if we need to pass data between task that exceed the ability of the metadata database.
+- By default, Kestra uses internal storage as the XCOM equivalent in Airflow. It saves the file generated during a flow execution and pass them between tasks via `outputs`. [Kestra Internal Storage Docs](https://kestra.io/docs/architecture/main-components#internal-storage)  
+- Airflow has role based access control without paying. While we must pay the Kestra enterprise edition to enable RBAC.
+- Airflow has some ways to store secrets (using variables or in connections setting) without paying [Airflow Secret](https://airflow.apache.org/docs/apache-airflow/stable/security/secrets/index.html).  While we must pay the Kestra enterprise edition to enable storing secrets.  
 
 # Breaking Down Kestra yaml syntax
 ## id and namespace  
 ```yaml
 id : getting_started
 namespace : zoomcamp
-```
-    once we saved, there is no way to change id and namespace but to remove the existing yaml and create new one.  
-    id 
+```  
+`id` will be displayed in the Flow menu. `namespace` is used as a workspace group. If we store key value or secret in the same namespace, then we can use it anywhere in the tasks or flows without creating new id or variables. Pretty convenient feature, so, make sure these two are correctly setup. Once we saved the yaml, there is no way to change id and namespace but to remove the existing yaml and create new one.  
 
-# Important things (to me)
-when encountering:
+```yaml
+variables:
+  data : green_taxi.csv
+  table: public.green_taxi_trip
+```
+accessing variables described under `variables` can be done in two ways:
+1. Call it in a peeble expression directly {{ vars.data }} will display green_taxi.csv  
+2. when encountering:
 ```yaml
 variables:
   file: "{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv"
@@ -29,7 +38,8 @@ variables:
   table: "public.{{inputs.taxi}}_tripdata"
   data: "{{outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ inputs.year ~ '-' ~ inputs.month ~ '.csv']}}"
 ```  
-It is important to add `{{render(vars."the nameof the variable that we want to use")}}`.  `render` will recursively translate all of the jinja templating and output the final result rather than just output the `{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv`
+It is important to add `{{render(vars."the nameof the variable that we want to use")}}`.  `render` will recursively translate all of the peeble templating and output the final result rather than just output the `{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv`  
+
 For example, in a task of `set_label` we want to access the file variable, so we must do it like so
 ```yaml
 tasks:
@@ -38,6 +48,7 @@ tasks:
     labels:
       file: "{{render(vars.file)}}"
       taxi: "{{inputs.taxi}}"
-```
+```  
+notice that `file` variable has `render` in it before the `vars.file`.
 
 
