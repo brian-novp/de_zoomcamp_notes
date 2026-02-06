@@ -68,4 +68,18 @@ DataTalksClub said there are two groups of best practices.
 1. Avoid using `SELECT *` . Because it will scan the whole table. Scanning the whole table will incur higher cost. BigQuery is a columnar storage, maximize it by always select the necessary columns with filtering. (Be mindful about query pricing)
 2. Try to always use partitioned column in a `WHERE` clause. This will keep the query to scan less data. Therefore optimizing cost.
 3. Be mindful if we use streaming insert (why?)
-4. 
+4. Better to materialize queries into different stages, so we can use it in multiple location. So he said we can use CTE, but he recommended that we materialize our queries for the sake of availability.
+
+## Query Optimization
+1. Filter on partitioned or clustered columns
+2. Denormalizing data (does he mean like One big table?)
+3. Use nested or repeated columns in case of complex data (it helps to denormalize the data)
+4. Use external data sources appropriately or dont use it in case if we want a high query performance (e.g. reading from GCS incurs cost)
+5. Reduce data before using a JOIN (filter in `where` clause)
+6. Do not treat `WITH` clauses as a prepared statements
+7. Avoid oversharding tables
+8. Avoid JavaScript User-Defined Functions
+9. Use approximate aggregation functions (HyperLogLog++)
+10. Order Last, for query operations to maximize performance
+11. Optimize join patterns
+12. Place the table with the largest number of rows first, followed by the table with the fewest rows, and then place the remaining tables by decreasing size. By placing the largest table first, it will be evenly distributed. It has something to do with Dremel, [how BigQuery works under the hood](https://cloud.google.com/blog/products/bigquery/bigquery-under-the-hood).
