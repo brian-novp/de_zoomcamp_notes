@@ -27,12 +27,12 @@ Online Analytical Processing vs Online Transaction Processing
 - By default, BigQuery cache result. This means, if we execute the same query, it will produce the same result as the first-time the query ran. BQ done this because it makes the query faster. Disable this cache data to make the data 'live'. Read [BigQuery cached result](https://docs.cloud.google.com/bigquery/docs/cached-results)
 
 ## BigQuery Pricing
-- On-demand Pricing
+- On-demand Pricing  
 By default, queries are billed using the on-demand (per TiB) pricing model, where you pay for the data scanned by your queries.  
 
 With on-demand pricing, you will generally have access to up to 2,000 concurrent slots, shared among all queries in a single project. Periodically, BigQuery will temporarily burst beyond this limit to accelerate smaller queries. In addition, you might have fewer slots available if there is a high amount of contention for capacity in a specific location. 
 
-- Capacity Compute Pricing
+- Capacity Compute Pricing  
 BigQuery offers a capacity-based compute pricing model for customers who need additional capacity or prefer a predictable cost for query workloads rather than the on-demand price (per TiB of data processed). The capacity compute model offers pay-as-you-go pricing (with autoscaling) and optional one year and three year commitments that provide discounted prices. You pay for query processing capacity, measured in slots (virtual CPUs) over time.  
 
 More details on [BigQuery Pricing](https://cloud.google.com/bigquery/pricing?hl=en)  
